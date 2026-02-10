@@ -73,10 +73,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   const handleAuthSuccess = () => {
-    // We use window.location.assign to force a full page reload to the dashboard.
+    // We use window.location.assign to force a full page reload to the main page.
     // This ensures that all Firebase services and user state are correctly
     // re-initialized after authentication.
-    window.location.assign('/dashboard');
+    window.location.assign('/');
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
