@@ -24,7 +24,6 @@ import {
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuth, useFirestore } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
@@ -47,7 +46,6 @@ type AuthFormProps = {
 export default function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
   const auth = useAuth();
   const firestore = useFirestore();
 
@@ -74,6 +72,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   };
 
+  const handleAuthSuccess = () => {
+    // We use window.location.assign to force a full page reload to the dashboard.
+    // This ensures that all Firebase services and user state are correctly
+    // re-initialized after authentication.
+    window.location.assign('/dashboard');
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError('');
@@ -84,7 +89,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       } else {
         await signInWithEmailAndPassword(auth, values.email, values.password);
       }
-      router.push('/dashboard');
+      handleAuthSuccess();
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -99,7 +104,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       await createUserDocument(result.user);
-      router.push('/dashboard');
+      handleAuthSuccess();
     } catch (e: any) {
       setError(e.message);
     } finally {

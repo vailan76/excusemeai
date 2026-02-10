@@ -38,6 +38,7 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     await signOut(auth);
+    router.push('/login');
   };
 
   if (isUserLoading || isUserDataLoading || !user) {
