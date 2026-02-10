@@ -91,7 +91,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
       }
       handleAuthSuccess();
     } catch (e: any) {
-      setError(e.message);
+      if (e.code) {
+        const errorCode = e.code.replace('auth/', '').replace(/-/g, ' ');
+        setError(errorCode.charAt(0).toUpperCase() + errorCode.slice(1));
+      } else {
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +111,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
       await createUserDocument(result.user);
       handleAuthSuccess();
     } catch (e: any) {
-      setError(e.message);
+      if (e.code) {
+        const errorCode = e.code.replace('auth/', '').replace(/-/g, ' ');
+        setError(errorCode.charAt(0).toUpperCase() + errorCode.slice(1));
+      } else {
+        setError(e.message);
+      }
     } finally {
       setLoading(false);
     }
