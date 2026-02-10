@@ -49,6 +49,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const auth = useAuth();
   const firestore = useFirestore();
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
   const createUserDocument = async (user: User) => {
     const userRef = doc(firestore, 'users', user.uid);
     const userDoc = await getDoc(userRef);
@@ -103,7 +111,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       const result = await signInWithPopup(auth, provider);
       await createUserDocument(result.user);
       handleAuthSuccess();
-    } catch (e: any) => {
+    } catch (e: any) {
       if (e.code) {
         const errorCode = e.code.replace('auth/', '').replace(/-/g, ' ');
         setError(errorCode.charAt(0).toUpperCase() + errorCode.slice(1));
