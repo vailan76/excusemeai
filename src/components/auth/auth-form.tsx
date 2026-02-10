@@ -167,7 +167,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
               )}
             />
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button
+              type="button"
+              onClick={form.handleSubmit(onSubmit)}
+              className="w-full"
+              disabled={loading}
+            >
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {buttonText}
             </Button>
@@ -181,7 +186,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
             <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
           </div>
         </div>
-        <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
+        <Button
+          variant="outline"
+          type="button"
+          className="w-full"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+        >
           {loading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
