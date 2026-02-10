@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState, useActionState } from 'react';
 import type { FormState } from '@/lib/actions';
 import { generateExcuseAction } from '@/lib/actions';
 import ExcuseGeneratorForm from './excuse-generator-form';
@@ -18,7 +17,7 @@ const initialState: FormState = {
 };
 
 export default function ExcuseGenerator() {
-  const [state, formAction] = useFormState(generateExcuseAction, initialState);
+  const [state, formAction] = useActionState(generateExcuseAction, initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFormSubmit = async (formData: FormData) => {
