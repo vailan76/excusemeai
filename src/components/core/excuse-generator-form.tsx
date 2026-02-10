@@ -28,6 +28,9 @@ type ExcuseGeneratorFormProps = {
 
 export default function ExcuseGeneratorForm({ formAction, isSubmitting }: ExcuseGeneratorFormProps) {
   const [situation, setSituation] = useState('');
+  const [tone, setTone] = useState('');
+  const [targetPerson, setTargetPerson] = useState('');
+  const [urgencyLevel, setUrgencyLevel] = useState('');
 
   return (
     <form action={formAction}>
@@ -58,7 +61,7 @@ export default function ExcuseGeneratorForm({ formAction, isSubmitting }: Excuse
             </div>
             <div className="space-y-2">
               <Label htmlFor="tone">Tone</Label>
-              <Select name="tone" required defaultValue="Casual">
+              <Select name="tone" required defaultValue="Casual" onValueChange={setTone}>
                 <SelectTrigger id="tone">
                   <SelectValue placeholder="Select a tone" />
                 </SelectTrigger>
@@ -68,14 +71,13 @@ export default function ExcuseGeneratorForm({ formAction, isSubmitting }: Excuse
                   <SelectItem value="Emotional">Emotional</SelectItem>
                   <SelectItem value="Casual">Casual</SelectItem>
                   <SelectItem value="Dramatic">Dramatic</SelectItem>
+                  <SelectItem value="Custom text">Custom text</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="targetPerson">Target Person</Label>
-              <Select name="targetPerson" required defaultValue="Friend">
+              <Select name="targetPerson" required defaultValue="Friend" onValueChange={setTargetPerson}>
                 <SelectTrigger id="targetPerson">
                   <SelectValue placeholder="Who is this for?" />
                 </SelectTrigger>
@@ -85,12 +87,13 @@ export default function ExcuseGeneratorForm({ formAction, isSubmitting }: Excuse
                   <SelectItem value="Friend">Friend</SelectItem>
                   <SelectItem value="Partner">Partner</SelectItem>
                   <SelectItem value="Parent">Parent</SelectItem>
+                  <SelectItem value="Custom text">Custom text</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="urgencyLevel">Urgency</Label>
-              <Select name="urgencyLevel" required defaultValue="Medium">
+              <Select name="urgencyLevel" required defaultValue="Medium" onValueChange={setUrgencyLevel}>
                 <SelectTrigger id="urgencyLevel">
                   <SelectValue placeholder="Select urgency" />
                 </SelectTrigger>
@@ -98,6 +101,7 @@ export default function ExcuseGeneratorForm({ formAction, isSubmitting }: Excuse
                   <SelectItem value="Low">Low</SelectItem>
                   <SelectItem value="Medium">Medium</SelectItem>
                   <SelectItem value="Emergency">Emergency</SelectItem>
+                  <SelectItem value="Custom text">Custom text</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -109,6 +113,39 @@ export default function ExcuseGeneratorForm({ formAction, isSubmitting }: Excuse
                 id="customText"
                 name="customText"
                 placeholder="e.g., I need an excuse for why my pet rock is sick."
+                required
+              />
+            </div>
+          )}
+          {tone === 'Custom text' && (
+            <div className="space-y-2">
+              <Label htmlFor="customTone">Custom Tone</Label>
+              <Textarea
+                id="customTone"
+                name="customTone"
+                placeholder="e.g., A tone that is both apologetic and slightly annoyed."
+                required
+              />
+            </div>
+          )}
+          {targetPerson === 'Custom text' && (
+            <div className="space-y-2">
+              <Label htmlFor="customTargetPerson">Custom Target Person</Label>
+              <Textarea
+                id="customTargetPerson"
+                name="customTargetPerson"
+                placeholder="e.g., My landlord"
+                required
+              />
+            </div>
+          )}
+          {urgencyLevel === 'Custom text' && (
+            <div className="space-y-2">
+              <Label htmlFor="customUrgencyLevel">Custom Urgency</Label>
+              <Textarea
+                id="customUrgencyLevel"
+                name="customUrgencyLevel"
+                placeholder="e.g., Not urgent at all, but should sound important."
                 required
               />
             </div>

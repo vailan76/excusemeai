@@ -23,10 +23,13 @@ const ExcuseSchema = z.object({
     'Travel excuse',
     'Custom text',
   ]),
-  tone: z.enum(['Professional', 'Funny', 'Emotional', 'Casual', 'Dramatic']),
-  targetPerson: z.enum(['Boss', 'Teacher', 'Friend', 'Partner', 'Parent']),
-  urgencyLevel: z.enum(['Low', 'Medium', 'Emergency']),
+  tone: z.enum(['Professional', 'Funny', 'Emotional', 'Casual', 'Dramatic', 'Custom text']),
+  targetPerson: z.enum(['Boss', 'Teacher', 'Friend', 'Partner', 'Parent', 'Custom text']),
+  urgencyLevel: z.enum(['Low', 'Medium', 'Emergency', 'Custom text']),
   customText: z.string().optional(),
+  customTone: z.string().optional(),
+  customTargetPerson: z.string().optional(),
+  customUrgencyLevel: z.string().optional(),
 });
 
 export async function generateExcuseAction(
