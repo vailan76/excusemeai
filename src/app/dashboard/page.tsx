@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -8,16 +10,68 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useUser, useAuth, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { doc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function DashboardPage() {
-  // Mock user data. In a real application, this would be fetched for the logged-in user.
-  const user = {
-    email: 'user@example.com',
-    plan: 'FREE',
-    dailyUsage: 2,
+  const { user, isUserLoading } = useUser();
+  const auth = useAuth();
+  const firestore = useFirestore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.replace('/login');
+    }
+  }, [user, isUserLoading, router]);
+
+  const userDocRef = useMemoFirebase(() => {
+    if (!user) return null;
+    return doc(firestore, 'users', user.uid);
+  }, [firestore, user]);
+
+  const { data: userData, isLoading: isUserDataLoading } = useDoc(userDocRef);
+
+  const handleLogout = async () => {
+    await signOut(auth);
   };
 
-  const isPremium = user.plan === 'PREMIUM';
+  if (isUserLoading || isUserDataLoading || !user) {
+    return (
+      <div className="container mx-auto max-w-4xl px-4 py-12">
+        <div className="mb-8">
+          <Skeleton className="h-10 w-1/3" />
+          <Skeleton className="mt-2 h-5 w-1/2" />
+        </div>
+        <div className="grid gap-8 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-16 w-full" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-1/2" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-16 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  const isPremium = userData?.plan === 'PREMIUM';
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-12">
@@ -42,7 +96,7 @@ export default function DashboardPage() {
                 variant={isPremium ? 'default' : 'secondary'}
                 className={isPremium ? 'bg-accent text-accent-foreground' : ''}
               >
-                {user.plan}
+                {userData?.plan}
               </Badge>
             </div>
             {!isPremium && (
@@ -61,7 +115,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between rounded-lg border p-4">
               <p className="font-medium">Today's Usage</p>
               <p className="font-mono text-lg font-semibold">
-                {isPremium ? 'Unlimited' : `${user.dailyUsage} / 5`}
+                {isPremium ? 'Unlimited' : `${userData?.dailyUsage ?? 0} / 5`}
               </p>
             </div>
             {!isPremium && (
@@ -72,7 +126,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-8 text-center">
-        <Button variant="ghost">Log Out</Button>
+        <Button variant="ghost" onClick={handleLogout}>Log Out</Button>
       </div>
     </div>
   );

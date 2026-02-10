@@ -32,62 +32,20 @@ const ExcuseSchema = z.object({
   customUrgencyLevel: z.string().optional(),
 });
 
+// This is a server action, but the logic has been moved to the client-side
+// in ExcuseGenerator.tsx to handle authentication and user data securely
+// on the client. This file can be removed or repurposed if server-side
+// logic is needed in the future.
 export async function generateExcuseAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  // Mocking auth and freemium logic for now.
-  // In a real app, you'd get the user from a session, check their plan and usage.
-  const isPremiumUser = false; // Mock.
-  const usageLimitReached = Math.random() < 0.1; // Mock a 10% chance of hitting the limit for demo purposes.
+  
+  console.log("This server action is not in use. See src/components/core/excuse-generator.tsx")
 
-  // This is a placeholder for user authentication. In a real app, this would be a check for a valid user session.
-  const isAuthenticated = true; 
-
-  if (!isAuthenticated) {
-     return {
+  return {
       excuse: null,
       watermark: false,
-      error: 'You must be logged in to generate an excuse.',
+      error: 'This action is not in use.',
     };
-  }
-
-  if (!isPremiumUser && usageLimitReached) {
-    return {
-      excuse: null,
-      watermark: false,
-      error: 'Daily limit reached. Upgrade to Premium for unlimited excuses.',
-    };
-  }
-
-  const parsed = ExcuseSchema.safeParse(Object.fromEntries(formData));
-
-  if (!parsed.success) {
-    return {
-      excuse: null,
-      watermark: false,
-      error: 'Invalid form data. Please try again.',
-    };
-  }
-
-  const input: GenerateRealisticExcuseInput = parsed.data;
-
-  try {
-    const result = await generateRealisticExcuse(input);
-
-    // In a real app, update usage count in DB here.
-
-    return {
-      excuse: result.excuse,
-      watermark: !isPremiumUser,
-      error: null,
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      excuse: null,
-      watermark: false,
-      error: 'Failed to generate excuse. Please try again later.',
-    };
-  }
 }

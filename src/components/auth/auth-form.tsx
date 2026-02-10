@@ -24,6 +24,16 @@ import {
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth, useFirestore } from '@/firebase';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  User,
+} from 'firebase/auth';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -37,6 +47,9 @@ type AuthFormProps = {
 export default function AuthForm({ mode }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const router = useRouter();
+  const auth = useAuth();
+  const firestore = useFirestore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,23 +59,52 @@ export default function AuthForm({ mode }: AuthFormProps) {
     },
   });
 
+  const createUserDocument = async (user: User) => {
+    const userRef = doc(firestore, 'users', user.uid);
+    const userDoc = await getDoc(userRef);
+    if (!userDoc.exists()) {
+      await setDoc(userRef, {
+        id: user.uid,
+        email: user.email,
+        plan: 'FREE',
+        dailyUsage: 0,
+        lastUsageDate: serverTimestamp(),
+        createdAt: serverTimestamp(),
+      });
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError('');
-    // Placeholder for auth logic
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(values);
-    setError(`This is a demo. ${mode} functionality is not implemented.`);
-    setLoading(false);
+    try {
+      if (mode === 'signup') {
+        const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+        await createUserDocument(userCredential.user);
+      } else {
+        await signInWithEmailAndPassword(auth, values.email, values.password);
+      }
+      router.push('/dashboard');
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setError('');
-    // Placeholder for Google Sign In
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setError('This is a demo. Google Sign-In is not implemented.');
-    setLoading(false);
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      await createUserDocument(result.user);
+      router.push('/dashboard');
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const title = mode === 'login' ? 'Welcome Back' : 'Create an Account';
