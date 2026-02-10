@@ -5,7 +5,7 @@ import { Header } from '@/components/core/header';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'ExcuseForge AI',
+  title: 'Excuse Me AI',
   description: 'Generate smart, funny, and professional excuses instantly',
 };
 

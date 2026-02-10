@@ -20,7 +20,7 @@ export function Header() {
               <path d="m12 5 2 5 5 2-5 2-2 5-2-5-5-2 5-2z" />
               <path d="M20 12c0 4.4-3.6 8-8 8s-8-3.6-8-8 3.6-8 8-8" />
             </svg>
-            <span className="font-headline font-bold sm:inline-block">ExcuseForge AI</span>
+            <span className="font-headline font-bold sm:inline-block">Excuse Me AI</span>
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">

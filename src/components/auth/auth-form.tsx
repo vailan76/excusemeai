@@ -109,7 +109,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   const title = mode === 'login' ? 'Welcome Back' : 'Create an Account';
   const description =
-    mode === 'login' ? 'Sign in to continue to ExcuseForge AI.' : 'Sign up to start generating excuses.';
+    mode === 'login' ? 'Sign in to continue to Excuse Me AI.' : 'Sign up to start generating excuses.';
   const buttonText = mode === 'login' ? 'Log In' : 'Sign Up';
   const switchLinkText =
     mode === 'login' ? "Don't have an account? Sign Up" : 'Already have an account? Log In';
