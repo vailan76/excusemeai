@@ -13,16 +13,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 export function UserNav() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
-  const router = useRouter();
 
   const handleLogout = async () => {
     await signOut(auth);
-    router.push('/login');
+    window.location.assign('/login');
   };
 
   if (isUserLoading) {
